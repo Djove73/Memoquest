@@ -1,11 +1,16 @@
 import SwiftUI
 
 struct GameHelpView: View {
-    @Environment(\.dismiss) private var dismiss
-    
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 20) {
+                // Title
+                Text("Ayuda")
+                    .font(.system(size: 40, weight: .bold))
+                    .foregroundColor(.blue)
+                    .frame(maxWidth: .infinity, alignment: .center)
+                    .padding(.bottom, 20)
+                
                 // Game Overview
                 HelpSection(title: "¿Qué es Memoquest?") {
                     Text("Memoquest es un juego de memoria donde debes encontrar pares de cartas iguales antes de que se acabe el tiempo. ¡Cuanto más rápido encuentres los pares, más puntos ganarás!")
@@ -48,8 +53,6 @@ struct GameHelpView: View {
             }
             .padding()
         }
-        .navigationTitle("Ayuda")
-        .navigationBarTitleDisplayMode(.inline)
     }
 }
 
@@ -81,7 +84,5 @@ struct HelpSection<Content: View>: View {
 }
 
 #Preview {
-    NavigationView {
-        GameHelpView()
-    }
+    GameHelpView()
 }

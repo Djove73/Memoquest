@@ -5,47 +5,44 @@ struct MenuView: View {
     @State private var showGame = false
     
     var body: some View {
-        NavigationView {
-            VStack(spacing: 30) {
-                // Title
-                Text("Memoquest")
-                    .font(.system(size: 48, weight: .bold))
-                    .foregroundColor(.blue)
-                
-                // Difficulty selection
-                VStack(spacing: 20) {
-                    Text("Selecciona la dificultad")
-                        .font(.title2)
-                        .foregroundColor(.secondary)
-                    
-                    ForEach(Game.Difficulty.allCases, id: \.self) { difficulty in
-                        DifficultyButton(
-                            difficulty: difficulty,
-                            isSelected: selectedDifficulty == difficulty,
-                            action: {
-                                selectedDifficulty = difficulty
-                                showGame = true
-                            }
-                        )
-                    }
-                }
-                .padding()
-                
-                Spacer()
-                
-                // Footer
-                Text("¡Encuentra todos los pares antes de que se acabe el tiempo!")
-                    .font(.caption)
+        VStack(spacing: 30) {
+            // Title
+            Text("Memoquest")
+                .font(.system(size: 48, weight: .bold))
+                .foregroundColor(.blue)
+            
+            // Difficulty selection
+            VStack(spacing: 20) {
+                Text("Selecciona la dificultad")
+                    .font(.title2)
                     .foregroundColor(.secondary)
-                    .multilineTextAlignment(.center)
-                    .padding()
+                
+                ForEach(Game.Difficulty.allCases, id: \.self) { difficulty in
+                    DifficultyButton(
+                        difficulty: difficulty,
+                        isSelected: selectedDifficulty == difficulty,
+                        action: {
+                            selectedDifficulty = difficulty
+                            showGame = true
+                        }
+                    )
+                }
             }
             .padding()
-            .navigationBarHidden(true)
-            .sheet(isPresented: $showGame) {
-                if let difficulty = selectedDifficulty {
-                    GameView(difficulty: difficulty)
-                }
+            
+            Spacer()
+            
+            // Footer
+            Text("¡Encuentra todos los pares antes de que se acabe el tiempo!")
+                .font(.caption)
+                .foregroundColor(.secondary)
+                .multilineTextAlignment(.center)
+                .padding()
+        }
+        .padding()
+        .sheet(isPresented: $showGame) {
+            if let difficulty = selectedDifficulty {
+                GameView(difficulty: difficulty)
             }
         }
     }

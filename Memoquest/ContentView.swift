@@ -18,13 +18,11 @@ struct ContentView: View {
                 }
                 .tag(0)
             
-            NavigationView {
-                GameHelpView()
-            }
-            .tabItem {
-                Label("Ayuda", systemImage: "questionmark.circle.fill")
-            }
-            .tag(1)
+            GameHelpView()
+                .tabItem {
+                    Label("Ayuda", systemImage: "questionmark.circle.fill")
+                }
+                .tag(1)
         }
         .accentColor(.blue)
     }
