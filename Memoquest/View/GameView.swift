@@ -14,8 +14,9 @@ struct GameView: View {
                 VStack(alignment: .leading) {
                     Text("Puntuación: \(viewModel.game.score)")
                         .font(.headline)
-                    Text("Tiempo: \(Int(viewModel.game.timeElapsed))s")
+                    Text("Tiempo: \(viewModel.formattedTime())")
                         .font(.subheadline)
+                        .foregroundColor(viewModel.remainingTime < 10 ? .red : .primary)
                 }
                 
                 Spacer()

@@ -5,14 +5,17 @@ class GameViewModel: ObservableObject {
     @Published var selectedCards: [Game.Card] = []
     @Published var timer: Timer?
     @Published var showGameOver = false
+    @Published var remainingTime: TimeInterval
     
     init(difficulty: Game.Difficulty) {
         self.game = Game(difficulty: difficulty)
+        self.remainingTime = difficulty.timeLimit
         startGame()
     }
     
     func startGame() {
         game = Game(difficulty: game.difficulty)
+        remainingTime = game.difficulty.timeLimit
         startTimer()
     }
     
@@ -20,10 +23,11 @@ class GameViewModel: ObservableObject {
         timer?.invalidate()
         timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { [weak self] _ in
             guard let self = self else { return }
-            self.game.timeElapsed += 1
-            
-            if self.game.timeElapsed >= self.game.difficulty.timeLimit {
-                self.endGame()
+            if self.remainingTime > 0 {
+                self.remainingTime -= 1
+                if self.remainingTime == 0 {
+                    self.endGame()
+                }
             }
         }
     }
@@ -92,5 +96,12 @@ class GameViewModel: ObservableObject {
     
     func restartGame() {
         startGame()
+    }
+    
+    // Función auxiliar para formatear el tiempo restante
+    func formattedTime() -> String {
+        let minutes = Int(remainingTime) / 60
+        let seconds = Int(remainingTime) % 60
+        return String(format: "%02d:%02d", minutes, seconds)
     }
 } 
