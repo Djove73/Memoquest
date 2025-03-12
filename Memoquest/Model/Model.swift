@@ -1,6 +1,7 @@
 import SwiftUI
 import UIKit
 
+
 struct Game: Identifiable {
     let id = UUID()
     var score: Int
@@ -20,7 +21,7 @@ struct Game: Identifiable {
         var isMatched: Bool
     }
     
-    enum Difficulty: String, CaseIterable {
+    enum Difficulty: String, CaseIterable, Codable {
         case easy = "Fácil"
         case medium = "Medio"
         case hard = "Difícil"
@@ -35,6 +36,7 @@ struct Game: Identifiable {
         
         var pairScore: Int {
             switch self {
+            //puntos al resolver una pareja
             case .easy: return 30
             case .medium: return 50
             case .hard: return 80
@@ -51,6 +53,7 @@ struct Game: Identifiable {
         
         var penaltyThreshold: Int {
             switch self {
+            //Penalización al hacer más de 10 intentos erroneos
             case .hard: return 10
             default: return Int.max
             }
@@ -75,11 +78,10 @@ struct Game: Identifiable {
         self.attempts = 0
         self.cards = []
         
-        // Initialize cards based on difficulty
         let emojis = ["🐶", "🐱", "🐭", "🐹", "🐰", "🦊", "🐻", "🐼", "🐨", "🐯", "🦁", "🐮", "🐷", "🐸", "🐵", "🐔"]
         let cardCount = difficulty.cardCount
         var selectedEmojis = Array(emojis.prefix(cardCount/2))
-        selectedEmojis += selectedEmojis // Duplicate for pairs
+        selectedEmojis += selectedEmojis //Duplicados para que en el juego haya dos de ellos
         selectedEmojis.shuffle()
         
         self.cards = selectedEmojis.map { Card(content: $0, isFaceUp: false, isMatched: false) }

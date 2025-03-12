@@ -9,6 +9,8 @@ class GameViewModel: ObservableObject {
     @Published var currentLevel: Game.Difficulty = .easy
     @Published var showLevelComplete = false
     @Published var isGameComplete = false
+    private var historyViewModel = HistoryViewModel()
+    private var totalTimeElapsed: TimeInterval = 0
     
     init(difficulty: Game.Difficulty) {
         self.game = Game(difficulty: difficulty)
@@ -28,6 +30,7 @@ class GameViewModel: ObservableObject {
             guard let self = self else { return }
             if self.remainingTime > 0 {
                 self.remainingTime -= 1
+                self.totalTimeElapsed += 1
                 if self.remainingTime == 0 {
                     self.endGame()
                 }
@@ -100,6 +103,7 @@ class GameViewModel: ObservableObject {
             showLevelComplete = true
         case .hard:
             isGameComplete = true
+            saveGameHistory()
             if game.score > game.highScore {
                 game.highScore = game.score
             }
@@ -110,10 +114,19 @@ class GameViewModel: ObservableObject {
     private func endGame() {
         timer?.invalidate()
         game.isGameOver = true
+        saveGameHistory()
         if game.score > game.highScore {
             game.highScore = game.score
         }
         showGameOver = true
+    }
+    
+    private func saveGameHistory() {
+        historyViewModel.addRecord(
+            score: game.score,
+            maxDifficulty: currentLevel,
+            timeElapsed: totalTimeElapsed
+        )
     }
     
     func nextLevel() {
@@ -123,6 +136,7 @@ class GameViewModel: ObservableObject {
     
     func restartGame() {
         currentLevel = .easy
+        totalTimeElapsed = 0
         startGame()
     }
     
