@@ -8,23 +8,21 @@
 import SwiftUI
 
 struct ContentView: View {
-    @State private var selectedTab = 0
+    @State private var showHelp = false
     
     var body: some View {
-        TabView(selection: $selectedTab) {
-            MenuView()
-                .tabItem {
-                    Label("Jugar", systemImage: "gamecontroller.fill")
+        MenuView()
+            .overlay(alignment: .topTrailing) {
+                Button(action: { showHelp = true }) {
+                    Image(systemName: "questionmark.circle.fill")
+                        .font(.system(size: 24))
+                        .foregroundColor(.blue)
+                        .padding()
                 }
-                .tag(0)
-            
-            GameHelpView()
-                .tabItem {
-                    Label("Ayuda", systemImage: "questionmark.circle.fill")
-                }
-                .tag(1)
-        }
-        .accentColor(.blue)
+            }
+            .sheet(isPresented: $showHelp) {
+                GameHelpView()
+            }
     }
 }
 
