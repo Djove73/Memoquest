@@ -10,7 +10,6 @@ struct GameView: View {
     
     var body: some View {
         VStack {
-            // Game header
             HStack {
                 VStack(alignment: .leading) {
                     Text("Puntuación: \(viewModel.game.score)")

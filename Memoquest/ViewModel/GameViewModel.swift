@@ -45,6 +45,9 @@ class GameViewModel: ObservableObject {
         let card1 = selectedCards[0]
         let card2 = selectedCards[1]
         
+        // Incrementar el contador de intentos
+        game.attempts += 1
+        
         if card1.content == card2.content {
             // Match found
             if let index1 = game.cards.firstIndex(where: { $0.id == card1.id }),
@@ -59,7 +62,12 @@ class GameViewModel: ObservableObject {
                 }
             }
         } else {
-            // No match
+            // No match - Apply penalty if applicable
+            if game.difficulty == .hard && game.attempts > game.difficulty.penaltyThreshold {
+                game.score = max(0, game.score - game.difficulty.penaltyPoints)
+            }
+            
+            // No match animation
             DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [weak self] in
                 guard let self = self else { return }
                 if let index1 = self.game.cards.firstIndex(where: { $0.id == card1.id }),

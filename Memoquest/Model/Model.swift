@@ -11,6 +11,7 @@ struct Game: Identifiable {
     var highScore: Int
     var cards: [Card]
     var matchedPairs: Int
+    var attempts: Int
     
     struct Card: Identifiable {
         let id = UUID()
@@ -47,6 +48,20 @@ struct Game: Identifiable {
             case .hard: return 16
             }
         }
+        
+        var penaltyThreshold: Int {
+            switch self {
+            case .hard: return 10
+            default: return Int.max
+            }
+        }
+        
+        var penaltyPoints: Int {
+            switch self {
+            case .hard: return 10
+            default: return 0
+            }
+        }
     }
     
     init(difficulty: Difficulty) {
@@ -57,6 +72,7 @@ struct Game: Identifiable {
         self.isGameOver = false
         self.highScore = 0
         self.matchedPairs = 0
+        self.attempts = 0
         self.cards = []
         
         // Initialize cards based on difficulty
