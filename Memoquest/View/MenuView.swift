@@ -1,7 +1,6 @@
 import SwiftUI
 
 struct MenuView: View {
-    @State private var selectedDifficulty: Game.Difficulty?
     @State private var showGame = false
     
     var body: some View {
@@ -11,29 +10,30 @@ struct MenuView: View {
                 .font(.system(size: 48, weight: .bold))
                 .foregroundColor(.blue)
             
-            // Difficulty selection
-            VStack(spacing: 20) {
-                Text("Selecciona la dificultad")
-                    .font(.title2)
-                    .foregroundColor(.secondary)
-                
-                ForEach(Game.Difficulty.allCases, id: \.self) { difficulty in
-                    DifficultyButton(
-                        difficulty: difficulty,
-                        isSelected: selectedDifficulty == difficulty,
-                        action: {
-                            selectedDifficulty = difficulty
-                            showGame = true
-                        }
-                    )
+            Spacer()
+            
+            // Play Button
+            Button(action: { showGame = true }) {
+                HStack {
+                    Image(systemName: "play.fill")
+                        .font(.title)
+                    Text("Jugar")
+                        .font(.title)
+                        .fontWeight(.bold)
                 }
+                .foregroundColor(.white)
+                .padding()
+                .padding(.horizontal, 30)
+                .background(
+                    RoundedRectangle(cornerRadius: 15)
+                        .fill(Color.blue)
+                )
             }
-            .padding()
             
             Spacer()
             
             // Footer
-            Text("¡Encuentra todos los pares antes de que se acabe el tiempo!")
+            Text("¡Encuentra todos los pares y supera los niveles!")
                 .font(.caption)
                 .foregroundColor(.secondary)
                 .multilineTextAlignment(.center)
@@ -41,47 +41,8 @@ struct MenuView: View {
         }
         .padding()
         .sheet(isPresented: $showGame) {
-            if let difficulty = selectedDifficulty {
-                GameView(difficulty: difficulty)
-            }
+            GameView(difficulty: .easy)
         }
-    }
-}
-
-struct DifficultyButton: View {
-    let difficulty: Game.Difficulty
-    let isSelected: Bool
-    let action: () -> Void
-    
-    var body: some View {
-        Button(action: action) {
-            HStack {
-                VStack(alignment: .leading) {
-                    Text(difficulty.rawValue)
-                        .font(.title3)
-                        .fontWeight(.semibold)
-                    
-                    Text("\(Int(difficulty.timeLimit))s • \(difficulty.cardCount/2) pares")
-                        .font(.caption)
-                        .foregroundColor(.secondary)
-                }
-                
-                Spacer()
-                
-                Image(systemName: "chevron.right")
-                    .foregroundColor(.secondary)
-            }
-            .padding()
-            .background(
-                RoundedRectangle(cornerRadius: 12)
-                    .fill(isSelected ? Color.blue.opacity(0.1) : Color.gray.opacity(0.1))
-            )
-            .overlay(
-                RoundedRectangle(cornerRadius: 12)
-                    .stroke(isSelected ? Color.blue : Color.clear, lineWidth: 2)
-            )
-        }
-        .buttonStyle(PlainButtonStyle())
     }
 }
 

@@ -6,6 +6,9 @@ class GameViewModel: ObservableObject {
     @Published var timer: Timer?
     @Published var showGameOver = false
     @Published var remainingTime: TimeInterval
+    @Published var currentLevel: Game.Difficulty = .easy
+    @Published var showLevelComplete = false
+    @Published var isGameComplete = false
     
     init(difficulty: Game.Difficulty) {
         self.game = Game(difficulty: difficulty)
@@ -14,7 +17,7 @@ class GameViewModel: ObservableObject {
     }
     
     func startGame() {
-        game = Game(difficulty: game.difficulty)
+        game = Game(difficulty: currentLevel)
         remainingTime = game.difficulty.timeLimit
         startTimer()
     }
@@ -62,7 +65,7 @@ class GameViewModel: ObservableObject {
                 game.matchedPairs += 1
                 
                 if game.matchedPairs == game.difficulty.cardCount / 2 {
-                    endGame()
+                    levelComplete()
                 }
             }
         } else {
@@ -85,6 +88,25 @@ class GameViewModel: ObservableObject {
         selectedCards.removeAll()
     }
     
+    private func levelComplete() {
+        timer?.invalidate()
+        
+        switch currentLevel {
+        case .easy:
+            currentLevel = .medium
+            showLevelComplete = true
+        case .medium:
+            currentLevel = .hard
+            showLevelComplete = true
+        case .hard:
+            isGameComplete = true
+            if game.score > game.highScore {
+                game.highScore = game.score
+            }
+            showGameOver = true
+        }
+    }
+    
     private func endGame() {
         timer?.invalidate()
         game.isGameOver = true
@@ -94,7 +116,13 @@ class GameViewModel: ObservableObject {
         showGameOver = true
     }
     
+    func nextLevel() {
+        startGame()
+        showLevelComplete = false
+    }
+    
     func restartGame() {
+        currentLevel = .easy
         startGame()
     }
     
@@ -103,5 +131,14 @@ class GameViewModel: ObservableObject {
         let minutes = Int(remainingTime) / 60
         let seconds = Int(remainingTime) % 60
         return String(format: "%02d:%02d", minutes, seconds)
+    }
+    
+    // Función auxiliar para obtener el nombre del nivel actual
+    func getCurrentLevelName() -> String {
+        switch currentLevel {
+        case .easy: return "Fácil"
+        case .medium: return "Medio"
+        case .hard: return "Difícil"
+        }
     }
 } 

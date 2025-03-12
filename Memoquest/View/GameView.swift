@@ -12,6 +12,8 @@ struct GameView: View {
         VStack {
             HStack {
                 VStack(alignment: .leading) {
+                    Text("Nivel: \(viewModel.getCurrentLevelName())")
+                        .font(.headline)
                     Text("Puntuación: \(viewModel.game.score)")
                         .font(.headline)
                     Text("Tiempo: \(viewModel.formattedTime())")
@@ -42,7 +44,14 @@ struct GameView: View {
                 .padding()
             }
         }
-        .alert("¡Juego Terminado!", isPresented: $viewModel.showGameOver) {
+        .alert("¡Nivel Completado!", isPresented: $viewModel.showLevelComplete) {
+            Button("Siguiente Nivel") {
+                viewModel.nextLevel()
+            }
+        } message: {
+            Text("¡Felicidades! Has completado el nivel \(viewModel.getCurrentLevelName())\nPuntuación actual: \(viewModel.game.score)")
+        }
+        .alert("¡Juego Completado!", isPresented: $viewModel.showGameOver) {
             Button("Jugar de nuevo") {
                 viewModel.restartGame()
             }
@@ -50,7 +59,11 @@ struct GameView: View {
                 dismiss()
             }
         } message: {
-            Text("Tu puntuación: \(viewModel.game.score)\nMejor puntuación: \(viewModel.game.highScore)")
+            if viewModel.isGameComplete {
+                Text("¡Felicidades! Has completado todos los niveles\nPuntuación final: \(viewModel.game.score)\nMejor puntuación: \(viewModel.game.highScore)")
+            } else {
+                Text("¡Se acabó el tiempo!\nPuntuación: \(viewModel.game.score)\nMejor puntuación: \(viewModel.game.highScore)")
+            }
         }
     }
 }
