@@ -9,39 +9,44 @@ struct GameView: View {
     }
     
     var body: some View {
-        VStack {
-            HStack {
-                VStack(alignment: .leading) {
-                    Text("Nivel: \(viewModel.getCurrentLevelName())")
-                        .font(.headline)
-                    Text("Puntuación: \(viewModel.game.score)")
-                        .font(.headline)
-                    Text("Tiempo: \(viewModel.formattedTime())")
-                        .font(.subheadline)
-                        .foregroundColor(viewModel.remainingTime < 10 ? .red : .primary)
-                }
-                
-                Spacer()
-                
-                Button(action: { dismiss() }) {
-                    Image(systemName: "xmark.circle.fill")
-                        .font(.title2)
-                        .foregroundColor(.red)
-                }
-            }
-            .padding()
-            
-            // Game board
-            ScrollView {
-                LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 10), count: 4), spacing: 10) {
-                    ForEach(viewModel.game.cards) { card in
-                        CardView(card: card)
-                            .onTapGesture {
-                                viewModel.selectCard(card)
-                            }
+        NavigationStack {
+            VStack {
+                HStack {
+                    VStack(alignment: .leading) {
+                        Text("Nivel: \(viewModel.getCurrentLevelName())")
+                            .font(.headline)
+                        Text("Puntuación: \(viewModel.game.score)")
+                            .font(.headline)
+                        Text("Tiempo: \(viewModel.formattedTime())")
+                            .font(.subheadline)
+                            .foregroundColor(viewModel.remainingTime < 10 ? .red : .primary)
+                    }
+                    
+                    Spacer()
+                    
+                    Button(action: { dismiss() }) {
+                        Image(systemName: "xmark.circle.fill")
+                            .font(.title2)
+                            .foregroundColor(.red)
                     }
                 }
                 .padding()
+                
+                // Game board
+                ScrollView {
+                    LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 10), count: 4), spacing: 10) {
+                        ForEach(viewModel.game.cards) { card in
+                            CardView(card: card)
+                                .onTapGesture {
+                                    viewModel.selectCard(card)
+                                }
+                        }
+                    }
+                    .padding()
+                }
+            }
+            .navigationDestination(isPresented: $viewModel.showCelebration) {
+                CelebrationView(isPresented: $viewModel.showCelebration, score: viewModel.game.score)
             }
         }
         .alert("¡Nivel Completado!", isPresented: $viewModel.showLevelComplete) {

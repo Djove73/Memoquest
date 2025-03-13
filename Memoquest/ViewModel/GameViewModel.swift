@@ -9,6 +9,7 @@ class GameViewModel: ObservableObject {
     @Published var currentLevel: Game.Difficulty = .easy
     @Published var showLevelComplete = false
     @Published var isGameComplete = false
+    @Published var showCelebration = false
     private var historyViewModel = HistoryViewModel()
     private var totalTimeElapsed: TimeInterval = 0
     
@@ -112,13 +113,20 @@ class GameViewModel: ObservableObject {
     }
     
     private func endGame() {
+        isGameComplete = true
         timer?.invalidate()
+        timer = nil
         game.isGameOver = true
         saveGameHistory()
         if game.score > game.highScore {
             game.highScore = game.score
         }
         showGameOver = true
+        
+        // Mostrar celebración si se completó en dificultad difícil
+        if game.difficulty == .hard {
+            showCelebration = true
+        }
     }
     
     private func saveGameHistory() {

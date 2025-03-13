@@ -36,7 +36,7 @@ struct Game: Identifiable {
         
         var pairScore: Int {
             switch self {
-            //puntos al resolver una pareja
+            //Puntos al resolver una pareja
             case .easy: return 30
             case .medium: return 50
             case .hard: return 80
